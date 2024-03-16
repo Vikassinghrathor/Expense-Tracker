@@ -2,6 +2,7 @@ import React, { useState, useRef } from "react";
 import classes from "./AuthForm.module.css";
 import { useHistory } from "react-router-dom";
 
+
 const AuthForm = () => {
   const history = useHistory();
   const emailInputRef = useRef();
@@ -21,6 +22,13 @@ const AuthForm = () => {
     event.preventDefault();
     const enteredEmail = emailInputRef.current.value;
     const enteredPassword = passwordInputRef.current.value;
+
+    // Clear input fields
+    emailInputRef.current.value = "";
+    passwordInputRef.current.value = "";
+    if (!isLogin) {
+      confirmPasswordInputRef.current.value = "";
+    }
 
     // Optional: Add validation
     if (!isLogin) {
@@ -65,9 +73,15 @@ const AuthForm = () => {
 
       if (!isLogin) {
         setSignupSuccess("Signup Successful, you may login");
+        // localStorage.setItem("token", data.idToken);
+      // Redirect to welcome page
+        history.replace("/welcome");
       }
       setShowError("");
-      history.replace("/"); // Redirect to home after login/signup
+      // Check if history object is defined before calling replace
+      if (history && typeof history.replace === "function") {
+        history.replace("/"); // Redirect to home after login/signup
+      }
     } catch (error) {
       console.error("Error during authentication:", error.message);
       setShowError(error.message);
